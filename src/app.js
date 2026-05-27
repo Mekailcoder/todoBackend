@@ -1,66 +1,3 @@
-// const express = require("express");
-// const NoteModel = require("./models/todo.model");
-
-// const app = express();
-
-// app.use(express.json()
-
-// module.exports = app;
-
-// app.post("/api/note", async (req, res) => {
-//   try {
-//     let { title, description } = req.body;
-
-//     if (!title)
-//       return res.status(400).json({
-//         message: "title is required",
-//       });
-
-//     if (!description)
-//       return res.status(400).json({
-//         message: "description is required",
-//       });
-
-//     if (title.trim().length < 3)
-//       return res.status(400).json({
-//         message: "minimum length is 3",
-//       });
-
-//     const newNote = await NoteModel.create({
-//       title,
-//       description,
-//     });
-
-//     return res.status(201).json({
-//       message: "Note created successfully",
-//       data: newNote,
-//     });
-//   } catch (error) {
-//     console.log(error);
-
-//     return res.status(500).json({
-//       message: "Server Error",
-//     });
-//   }
-// });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const express = require("express");
 const NoteModel = require("./models/todo.model");
 
@@ -68,9 +5,7 @@ const app = express();
 
 app.use(express.json());
 
-/* =========================
-   CREATE NOTE
-========================= */
+//CREATE NOTE
 app.post("/api/note", async (req, res) => {
   try {
     let { title, description } = req.body;
@@ -99,9 +34,8 @@ app.post("/api/note", async (req, res) => {
   }
 });
 
-/* =========================
-   GET ALL NOTES
-========================= */
+
+//GET ALL NOTES
 app.get("/api/note/", async (req, res) => {
   try {
     const notes = await NoteModel.find();
@@ -119,9 +53,9 @@ app.get("/api/note/", async (req, res) => {
   }
 });
 
-/* =========================
-   GET SINGLE NOTE
-========================= */
+
+// GET SINGLE NOTE
+
 app.get("/api/note/:id", async (req, res) => {
   try {
     let { id } = req.params;
@@ -147,9 +81,7 @@ app.get("/api/note/:id", async (req, res) => {
   }
 });
 
-/* =========================
-   UPDATE NOTE
-========================= */
+//    UPDATE NOTE
 app.patch("/api/note/:id", async (req, res) => {
   try {
     let { id } = req.params;
@@ -179,4 +111,29 @@ app.patch("/api/note/:id", async (req, res) => {
   }
 });
 
+//    DELETE NOTE
+app.delete("/api/note/:id", async (req, res) => {
+  try {
+    let { id } = req.params;
+
+    const deletedNote = await NoteModel.findByIdAndDelete(id);
+
+    if (!deletedNote) {
+      return res.status(404).json({
+        message: "Note not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Note deleted successfully",
+      data: deletedNote,
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({
+      message: "Server Error",
+    });
+  }
+});
 module.exports = app;
